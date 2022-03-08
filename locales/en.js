@@ -2,6 +2,7 @@ export const en = {
   project: "Projects",
   testimony: "Testimonials",
   contact: "Contact",
+  about: "About me",
   hero: "Hello everyone! I'm Ricardo Perez",
   heroDescription:
     "Developer who loves implementing designs that inspire and engage people.",

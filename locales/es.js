@@ -1,6 +1,7 @@
 export const es = {
   project: "Proyectos",
   testimony: "Testimonios",
+  about: "Sobre Mí",
   contact: "Contacto",
   hero: "¡Hola a todos! Soy Ricardo Pérez",
   heroDescription:
