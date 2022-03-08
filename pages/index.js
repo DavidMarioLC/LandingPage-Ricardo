@@ -1,15 +1,30 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiFillStar, AiOutlineMenu } from "react-icons/ai";
+import { CgClose } from "react-icons/cg";
 import { BsTelephoneFill } from "react-icons/bs";
 import { MdMail } from "react-icons/md";
 import { FaFacebookF } from "react-icons/fa";
 import { BsTwitter, BsInstagram } from "react-icons/bs";
-
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useRouter } from "next/router";
+import { es } from "../locales/es";
+import { en } from "../locales/en";
 export default function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const handlerMenu = () => setShowMenu(!showMenu);
+  const router = useRouter();
+  const { locale } = router;
+  const t = locale === "es" ? es : en;
+  const changeLanguage = (event) => {
+    const locale = event.target.value;
+    router.push("/", "/", { locale });
+  };
+  useEffect(() => {
+    AOS.init();
+  }, []);
   return (
     <>
       <Head>
@@ -19,50 +34,87 @@ export default function Home() {
       </Head>
       <header className="bg-mybrown text-zinc-50 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto p-4">
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <a href="#">LOGO</a>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-4 lg:items-center">
+              <a href="#" className="text-white text-2xl font-extrabold">
+                LOGO
+              </a>
+              {/* menu-mobile */}
               <nav
-                className={`bg-mybrown p-4  fixed z-10  left-0 w-full top-16 transition duration-300  ease-in-out	  ${
-                  showMenu ? "opacity-1  " : "opacity-0  "
-                }   `}
+                className={` ${
+                  showMenu ? "opacity-1 " : "opacity-0  invisible"
+                }bg-mybrown p-4 w-full  fixed z-10  left-0  top-16 transition duration-300  ease-in-out  lg:hidden `}
               >
-                <ul className="text-center ">
+                <ul className="text-center  lg:flex">
                   <li>
                     <a
-                      onClick={showMenu ? handlerMenu : null}
-                      className="block p-4"
+                      onClick={handlerMenu}
+                      className="block p-4 text-lg"
                       href="#proyectos"
                     >
-                      Proyectos
+                      {t.project}
                     </a>
                   </li>
                   <li>
                     <a
-                      onClick={showMenu ? handlerMenu : null}
-                      className="block p-4"
+                      onClick={handlerMenu}
+                      className="block p-4 text-lg"
                       href="#testimonios"
                     >
-                      Testimonios
+                      {t.testimony}
                     </a>
                   </li>
                   <li>
                     <a
-                      onClick={showMenu ? handlerMenu : null}
-                      className="block p-4"
+                      onClick={handlerMenu}
+                      className="block p-4 text-lg"
                       href="#contacto"
                     >
-                      Contacto
+                      {t.contact}
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              {/* menu-desktop */}
+              <nav className=" hidden bg-mybrown p-4 w-full  fixed z-10  left-0  top-16 transition duration-300  ease-in-out lg:block  lg:relative  lg:p-0 lg:top-0  ">
+                <ul className="text-center  lg:flex">
+                  <li>
+                    <a className="block p-4" href="#proyectos">
+                      {t.project}
+                    </a>
+                  </li>
+                  <li>
+                    <a className="block p-4" href="#testimonios">
+                      {t.testimony}
+                    </a>
+                  </li>
+                  <li>
+                    <a className="block p-4" href="#contacto">
+                      {t.contact}
                     </a>
                   </li>
                 </ul>
               </nav>
             </div>
+            <select
+              className="bg-mybrown text-white h-14 "
+              onChange={changeLanguage}
+              defaultValue={locale}
+            >
+              <option className="p-0" value="es">
+                ES
+              </option>
+              <option className="p-0" value="en">
+                EN
+              </option>
+            </select>
             <div
+              title="Menu"
+              aria-label="Open Menu"
               onClick={handlerMenu}
               className="border p-2  rounded-lg lg:hidden"
             >
-              <AiOutlineMenu />
+              {showMenu ? <CgClose /> : <AiOutlineMenu />}
             </div>
           </div>
         </div>
@@ -71,7 +123,10 @@ export default function Home() {
         <section className="bg-mybrown pt-4 pb-16  md:py-32" aria-label="Hero">
           <div className="max-w-6xl mx-auto px-4">
             <div className="md:flex gap-12">
-              <div className="flex justify-center relative md:order-2 md:flex-1 ">
+              <div
+                data-aos="zoom-in"
+                className="flex justify-center relative md:order-2 md:flex-1 "
+              >
                 <Image
                   src="/perfil.svg"
                   title="perfil"
@@ -81,36 +136,47 @@ export default function Home() {
                   priority
                 />
               </div>
-              <div className="flex flex-col gap-6 md:flex-1">
+              <div data-aos="zoom-in" className="flex flex-col gap-6 md:flex-1">
                 <h1 className="text-6xl font-extrabold text-zinc-50 leading-snug">
-                  ¡Hola a todos! Soy Ricardo Pérez
+                  {t.hero}
                 </h1>
                 <p className="text-2xl font-normal	text-zinc-300">
-                  Developer que le encanta implementar diseños que inspiran y
-                  atraen a las personas.
+                  {t.heroDescription}
                 </p>
                 <button
                   aria-label="Ver mi trabajo"
                   className="bg-violet-600 text-zinc-50 h-12 rounded-md font-black md:w-48"
                 >
-                  VER MI TRABAJO
+                  {t.showMyWork}
                 </button>
               </div>
             </div>
           </div>
         </section>
         <section
-          className="bg-mypinksoft py-16   md:py-32"
           aria-label="My projects"
+          className="bg-mypinksoft py-16   md:py-32"
           id="proyectos"
         >
           <div className="max-w-6xl mx-auto px-4">
-            <p className="pb-6 text-myorange tracking-[.15em]">PORTAFOLIO</p>
-            <h2 className="text-4xl	font-extrabold pb-6 text-mychocolate md:text-6xl">
-              Proyectos recientes
+            <p
+              data-aos="fade-right"
+              className="pb-6 text-myorange tracking-[.15em]"
+            >
+              {t.subtitlePortafolio}
+            </p>
+            <h2
+              data-aos="fade-right"
+              className="text-4xl	font-extrabold pb-6 text-mychocolate md:text-6xl"
+            >
+              {t.titlePortafolio}
             </h2>
             <div className="flex flex-col gap-8 items-center md:flex-wrap md:flex-row">
-              <article className="w-full relative rounded-2xl overflow-hidden max-w-xs		">
+              <article
+                data-aos="fade-up"
+                data-aos-anchor-placement="bottom-bottom"
+                className="w-full relative rounded-2xl overflow-hidden max-w-xs		"
+              >
                 <figure className="flex">
                   <Image
                     src="/project-niko.webp"
@@ -127,7 +193,12 @@ export default function Home() {
                   </h3>
                 </div>
               </article>
-              <article className="w-full relative rounded-2xl overflow-hidden max-w-xs		">
+              <article
+                data-aos="fade-up"
+                data-aos-delay="300"
+                data-aos-anchor-placement="bottom-bottom"
+                className="w-full relative rounded-2xl overflow-hidden max-w-xs		"
+              >
                 <figure className="flex">
                   <Image
                     src="/project-amazonas.webp"
@@ -144,7 +215,12 @@ export default function Home() {
                   </h3>
                 </div>
               </article>
-              <article className="w-full relative rounded-2xl overflow-hidden max-w-xs		">
+              <article
+                data-aos="fade-up"
+                data-aos-delay="600"
+                data-aos-anchor-placement="bottom-bottom"
+                className="w-full relative rounded-2xl overflow-hidden max-w-xs		"
+              >
                 <figure className="flex">
                   <Image
                     src="/project-principe.webp"
@@ -167,7 +243,7 @@ export default function Home() {
         <section className="py-16  md:py-32" aria-label="About me">
           <div className="max-w-6xl mx-auto px-4">
             <div className="md:flex gap-4 items-center">
-              <div className="flex md:flex-1">
+              <div data-aos="zoom-out" className="flex md:flex-1">
                 <Image
                   src="/notebook.webp"
                   title="Laptop"
@@ -177,38 +253,49 @@ export default function Home() {
                   priority
                 />
               </div>
-              <div className="flex  flex-col gap-6 md:flex-1">
+              <div
+                data-aos="fade-left"
+                className="flex  flex-col gap-6 md:flex-1"
+              >
                 <p className="text-base text-violet-400 tracking-[.15em]">
                   RICARDO PÉREZ
                 </p>
                 <h2 className="font-extrabold text-4xl text-mychocolate md:text-6xl ">
-                  Desarrollador web profesional
+                  {t.titleAbout}
                 </h2>
-                <p className="text-mysoftbrown text-xl leading-loose">
-                  Una de las cosas que más disfruto de la programación, es el
-                  poder darle vida a las ideas de los clientes a través de la
-                  tecnología y a su vez crear servicios accesibles para todo
-                  tipo de usuarios.
+                <p
+                  data-aos="zoom-out"
+                  className="text-mysoftbrown text-xl leading-loose"
+                >
+                  {t.descriptionAbout}
                 </p>
               </div>
             </div>
           </div>
         </section>
         <section
-          className=" bg-mypinksoft pt-4 pb-16 md:py-32"
           aria-label="Testimonies"
+          className=" bg-mypinksoft pt-4 pb-16 md:py-32"
           id="testimonios"
         >
           <div className="max-w-6xl mx-auto px-4">
-            <p className="text-center text-violet-400 tracking-[.15em]">
-              TESTIMONIOS
+            <p
+              data-aos="zoom-in-down"
+              className="text-center text-violet-400 tracking-[.15em]"
+            >
+              {t.subtitleTestimony}
             </p>
-            <h2 className="font-extrabold text-2xl text-center py-10 text-mychocolate md:text-6xl">
-              Estos son algunos testimonios de los clientes con los cuales he
-              trabajado.
+            <h2
+              data-aos="zoom-out"
+              className="font-extrabold text-2xl text-center py-10 text-mychocolate md:text-6xl"
+            >
+              {t.titleTestimony}
             </h2>
             <div className="lg:flex ">
-              <article className="  md:h-[29rem] flex flex-col gap-12  border p-6">
+              <article
+                data-aos="zoom-out-right"
+                className="  md:h-[29rem] flex flex-col gap-12  border p-6"
+              >
                 <div className="flex gap-3">
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
@@ -217,9 +304,7 @@ export default function Home() {
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
                 </div>
                 <p className="text-xl leading-loose text-mysoftbrown">
-                  Tengo algunos años trabajando con Javascript y aún así aprendí
-                  varias cosas importantes de Ricardo y como utiliza Javascript
-                  en el día a día.
+                  {t.testimony1}
                 </p>
                 <div className="flex items-center gap-6 ">
                   <div className="rounded-full flex ">
@@ -236,7 +321,10 @@ export default function Home() {
                   </p>
                 </div>
               </article>
-              <article className="  md:h-[29rem] flex flex-col gap-12 p-6 bg-white shadow-lg">
+              <article
+                data-aos="zoom-out-down"
+                className="  md:h-[29rem] flex flex-col gap-12 p-6 bg-white shadow-lg"
+              >
                 <div className="flex gap-3">
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
@@ -245,9 +333,7 @@ export default function Home() {
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
                 </div>
                 <p className="text-xl leading-loose text-mysoftbrown">
-                  Tengo algunos años trabajando con Javascript y aún así aprendí
-                  varias cosas importantes de Ricardo y como utiliza Javascript
-                  en el día a día.
+                  {t.testimony2}
                 </p>
                 <div className="flex items-center gap-6 ">
                   <div className="rounded-full flex ">
@@ -264,7 +350,10 @@ export default function Home() {
                   </p>
                 </div>
               </article>
-              <article className="  md:h-[29rem] flex flex-col gap-12  border p-6">
+              <article
+                data-aos="zoom-out-left"
+                className="  md:h-[29rem] flex flex-col gap-12  border p-6"
+              >
                 <div className="flex gap-3">
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
@@ -273,9 +362,7 @@ export default function Home() {
                   <AiFillStar className="h-6 w-6 text-yellow-400" />
                 </div>
                 <p className="text-xl leading-loose text-mysoftbrown">
-                  Tengo algunos años trabajando con Javascript y aún así aprendí
-                  varias cosas importantes de Ricardo y como utiliza Javascript
-                  en el día a día.
+                  {t.testimony3}
                 </p>
                 <div className="flex items-center gap-6 ">
                   <div className="rounded-full flex ">
@@ -303,13 +390,19 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex flex-col gap-10 md:flex-row">
               <div className="flex flex-col gap-6 text-left   md:order-2 md:flex-1">
-                <p className="text-base tracking-[.15em] text-myorange ">
-                  CONTACTO
+                <p
+                  data-aos="fade-up"
+                  className="text-base tracking-[.15em] text-myorange "
+                >
+                  {t.subtitleContact}
                 </p>
-                <h2 className="font-extrabold text-4xl md:text-5xl text-mychocolate">
-                  Si tienes un nuevo proyecto en mente, no dudes en contactarme.
+                <h2
+                  data-aos="zoom-out"
+                  className="font-extrabold text-4xl md:text-5xl text-mychocolate"
+                >
+                  {t.titleContact}
                 </h2>
-                <div className="flex items-center gap-4">
+                <div data-aos="fade-left" className="flex items-center gap-4">
                   <div className="w-12 h-12 flex items-center justify-center text-white bg-red-400 rounded-full">
                     <BsTelephoneFill />
                   </div>
@@ -317,7 +410,11 @@ export default function Home() {
                     +1 (234) 928-22-34
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div
+                  data-aos="fade-left"
+                  data-aos-delay="300"
+                  className="flex items-center gap-4"
+                >
                   <div className="w-12 h-12 flex items-center justify-center text-white bg-red-400 rounded-full">
                     <MdMail />
                   </div>
@@ -326,9 +423,13 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              <div className="bg-stone-900 p-7 md:p-12 rounded-md  md:flex-1">
+              <div
+                data-aos="fade-up"
+                data-aos-anchor-placement="top-bottom"
+                className="bg-stone-900 p-7 md:p-12 rounded-md  md:flex-1"
+              >
                 <h3 className="text-2xl font-bold	text-slate-50 pb-6">
-                  Envía un mensaje con los detalles de tu proyecto
+                  {t.titleForm}
                 </h3>
                 <form className="flex flex-col gap-6">
                   <div className="flex flex-col gap-4">
@@ -336,14 +437,14 @@ export default function Home() {
                       className="font-semibold	text-slate-50 "
                       htmlFor="name"
                     >
-                      NOMBRE COMPLETO
+                      {t.labelName}
                     </label>
                     <input
                       className="px-4 py-2 rounded"
                       id="name"
                       name="name"
                       type="text"
-                      placeholder="Ingresa tu nombre"
+                      placeholder={t.placeHolderName}
                     />
                   </div>
                   <div className="flex flex-col gap-4">
@@ -351,14 +452,14 @@ export default function Home() {
                       className="font-semibold	text-slate-50 "
                       htmlFor="mail"
                     >
-                      CORREO ELECTRÓNICO
+                      {t.labelMail}
                     </label>
                     <input
                       className="px-4 py-2 rounded"
                       name="mail"
                       id="mail"
                       type="mail"
-                      placeholder="Ingresa tu correo electrónico"
+                      placeholder={t.placeHolderMail}
                     />
                   </div>
                   <div className="flex flex-col gap-4">
@@ -366,7 +467,7 @@ export default function Home() {
                       className="font-semibold	text-slate-50 "
                       htmlFor="description"
                     >
-                      DESCRIPTION
+                      {t.labelDescription}
                     </label>
                     <textarea
                       className="px-4 py-2 rounded"
@@ -374,11 +475,11 @@ export default function Home() {
                       id="description"
                       cols="30"
                       rows="5"
-                      placeholder="Ingresa una breve descripción del proyecto que tienes en mente"
+                      placeholder={t.placeHolderDescription}
                     ></textarea>
                   </div>
                   <button className="bg-violet-600 text-slate-50 py-4  px-6 rounded-md font-bold md:w-48">
-                    ENVIAR MENSAJE
+                    {t.showMyWork}
                   </button>
                 </form>
               </div>
@@ -403,9 +504,7 @@ export default function Home() {
             </div>
           </div>
           <hr className="my-6 block" />
-          <p className="text-center text-white md:text-left">
-            Ricardo Peréz © 2022. Todos los derechos recervados
-          </p>
+          <p className="text-center text-white md:text-left">{t.reserved}</p>
         </div>
       </footer>
     </>
